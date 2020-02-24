@@ -4,7 +4,7 @@ const Watcher = require("feed-watcher");
 const striptags = require("striptags");
 
 const client = new Discord.Client();
-const interval = 300; // seconds
+const interval = 500; // seconds
 const test = "http://lorem-rss.herokuapp.com/feed?unit=second&interval=30";
 const feed = "https://www.pathofexile.com/news/rss";
 const secret = process.env.API_KEY;
@@ -14,13 +14,16 @@ client.login(secret);
 
 client.on("ready", () => {
   const poewnewsChannel = client.channels.find(
-    channel => channel.name === "poewnews"
+    channel => channel.name === "general"
   ).id;
+
 
   console.log(`Logged in as ${client.user.tag}!`);
 
   watcher.on("new entries", function(entries) {
     entries.forEach(function(entry) {
+      console.log(entry);
+      
       client.channels.get(poewnewsChannel).send({
         embed: {
           title: striptags(entry.title),
@@ -36,7 +39,9 @@ client.on("ready", () => {
   });
 });
 
-watcher.start().catch(error => {
+watcher.start().
+then()
+.catch(error => {
   console.error("err " + error);
   watcher.stop();
 });
